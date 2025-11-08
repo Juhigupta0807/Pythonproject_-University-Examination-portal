@@ -1,13 +1,10 @@
 import mysql.connector
 mydb= mysql.connector.connect(host = "localhost", user = "root", password = "juhi@1234#1", database = "University")
 mycursor = mydb.cursor()
-import numpy as np 
 import pandas as pd
 import random
-import statistics
-import math
 while True:
-    n = int(input("Enter the choice number:\n1. Admin\n2. Student\n3.Faculty\n4. EXIT\n"))
+    n = int(input("MAIN LOGIN :\n1. Admin\n2. Student\n3.Faculty\n4. EXIT\nEnter your choice number: "))
 
     if n == 1:
         print("\n--- Admin Login ---")
@@ -98,7 +95,7 @@ while True:
 
                 elif s==6:
                     f_id=input("Enter Faculty ID: ")
-                    mycursor.execute(f"DELETE FROM faculty_details where faculty_id='{f_id}'")
+                    mycursor.execute(f"DELETE FROM faculty_details WHERE faculty_id='{f_id}'")
                     mydb.commit()
                     print("DATA DELETED SUCESSFULLY")
                 
@@ -136,15 +133,16 @@ while True:
             print("\nLogin Successful! Welcome,", student_id)
 
             while True:
-                s = int(input("Enter the choice number:\n1. Displaying the marks \n2. Updating the password  \n3. Display your details\n4. EXIT"))  
+                s = int(input("\n1. Displaying the marks \n2. Updating the password  \n3. Display your details\n4. EXIT \nEnter the choice number: "))  
                 if s==1:
                     mycursor.execute(f"SELECT course_name,marks_obtained from results_sem1 where student_id='{student_id}'")
                     sem1=mycursor.fetchall()
                     mycursor.execute(f"SELECT course_name,marks_obtained from results_sem2 where student_id='{student_id}'")
                     sem2=mycursor.fetchall()
-                    print("\n sem1:")
+                    
                     for row in sem1:
                         print(row[0],"-",row[1])
+                    
                     for row in sem2:
                         print(row[0],"-",row[1])
                     #display marks
@@ -194,34 +192,31 @@ while True:
             while True:
                 s = int(input("""FACULTY FEATURES \n1. Add Marks \n2. Update Marks\n3. Marks Analysis \n4. Choose Random students for assigning project \n5 Class average \n6 EXIT \nEnter the choice number: """))  
                 if s==1:
-                    student_id = input("Enter student_id")
-                    student_name = input("Enter student name")
-                    department = input("Enter student department")
-                    course_id = input("Enter course id")
-                    course_name = input("Enter course name")
-                    maximum_marks = input("Enter max marks")
-                    marks_obtained = input("Marks obtained")
-                    semester = int(input("Enter the semester"))
+                    student_id = input("Enter student_id:")
+                    student_name = input("Enter student name:")
+                    department = input("Enter student department:")
+                    course_id = input("Enter course id:")
+                    course_name = input("Enter course name:")
+                    maximum_marks = input("Enter max marks:")
+                    marks_obtained = input("Marks obtained:")
+                    semester = int(input("Enter the semester:"))
                     mycursor.execute(
                     "SELECT * FROM student WHERE student_id=%s AND semester=%s",
                     (student_id, semester)
                     )
                     marks = mycursor.fetchone()
-
-                    if marks:
-                        print("Result already published")
+                    
+                    if semester == 1:
+                        table_name = "results_sem1"
                     else:
-                        if semester == 1:
-                            table_name = "results_sem1"
-                        else:
-                            table_name = "results_sem2"
-                        query = f"INSERT INTO {table_name} (student_id, student_name, department, course_id, course_name, max_marks, marks_obtained) VALUES (%s,%s,%s,%s,%s,%s,%s)"
-                        mycursor.execute(query, (student_id, student_name, department, course_id, course_name, maximum_marks, marks_obtained))
-                        mydb.commit()
-                        print("MARKS ENTERED SUCESSFULLY")
+                        table_name = "results_sem2"
+                    query = f"INSERT INTO {table_name} (student_id, student_name, department, course_id, course_name, max_marks, marks_obtained) VALUES (%s,%s,%s,%s,%s,%s,%s)"
+                    mycursor.execute(query, (student_id, student_name, department, course_id, course_name, maximum_marks, marks_obtained))
+                    mydb.commit()
+                    print("MARKS ENTERED SUCESSFULLY")
                 elif s==2:
-                    student_id = input("Enter student_id")
-                    course_id = input("Enter course id")
+                    student_id = input("Enter student_id:")
+                    course_id = input("Enter course id:")
                     updated_marks = int(input("Enter updated marks:"))
                     semester = int(input("Enter semester:"))
                     if semester == 1:
@@ -319,6 +314,9 @@ while True:
                 elif s==6:
                     print("EXITING THE PROGRAM")
                     break
+        
+        else:
+            print("\nNo Faculty Found")
       
 
     elif n == 4:
@@ -328,3 +326,12 @@ while True:
     else:
         print("Invalid choice, please try again.")
 mydb.close()
+
+
+
+
+
+
+
+
+
